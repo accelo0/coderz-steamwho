@@ -2,9 +2,8 @@ let personaggiFiltrati;
 let contaDomanda = 0;
 let pDomanda;
 
-function mostraDomanda(bottone) {
-  if (bottone) {
-    //in questo caso il gioco viene avviato da capo, se bottone = true
+function mostraDomanda(reset = false) {
+  if (reset) {
     contaDomanda = 0;
     personaggiFiltrati = [...personaggi];
   }
@@ -13,100 +12,73 @@ function mostraDomanda(bottone) {
   document.getElementById("startButton").style.display = "none";
   document.getElementById("labelWarn").style.display = "none";
 
-  //mostro gli elementi invisibili della classe nascosti
-  const nascostiClassElements = document.getElementsByClassName("nascosti");
-  for (let i = 0; i < nascostiClassElements.length; i++) {
-    nascostiClassElements[i].style.display = "inline";
-  }
+  [...document.getElementsByClassName("nascosti")].forEach((el) => {
+    el.style.display = "inline";
+  });
 }
 
-function sceltaPersonaggio(personaggio) {
-  personaggio = personaggi.find((p) => p.nome === personaggio);
+function sceltaPersonaggio(nome) {
+  const personaggio = personaggi.find((p) => p.nome === nome);
   console.log(personaggio);
+
   document.getElementById("personaggioNome").innerHTML = personaggio.nome;
   document.getElementById("personaggioImg").src = `imgs/${personaggio.nome
     .toLowerCase()
     .replace(/ /g, "_")}.png`;
   document.getElementById("personaggioBio").innerHTML = personaggio.descrizione;
 
-  let proprietà = [`Informazioni su ${personaggio.nome}`];
-  personaggio.scienziato
-    ? proprietà.push("scienziato: si")
-    : proprietà.push("scienziato: no");
-  personaggio.ingegnere
-    ? proprietà.push("ingegnere: si")
-    : proprietà.push("ingegnere: no");
-  personaggio.matematico
-    ? proprietà.push("matematico: si")
-    : proprietà.push("matematico: no");
-  personaggio.artista
-    ? proprietà.push("artista: si")
-    : proprietà.push("artista: no");
-  personaggio.informatico
-    ? proprietà.push("informatico: si")
-    : proprietà.push("informatico: no");
-  personaggio.vivente
-    ? proprietà.push("vivente: si")
-    : proprietà.push("vivente: no");
+  const proprietà = [
+    `Informazioni su ${personaggio.nome}`,
+    `scienziato: ${personaggio.scienziato ? "si" : "no"}`,
+    `ingegnere: ${personaggio.ingegnere ? "si" : "no"}`,
+    `matematico: ${personaggio.matematico ? "si" : "no"}`,
+    `artista: ${personaggio.artista ? "si" : "no"}`,
+    `informatico: ${personaggio.informatico ? "si" : "no"}`,
+    `vivente: ${personaggio.vivente ? "si" : "no"}`,
+  ];
 
   document.getElementById("personaggioProprietà").innerHTML =
     proprietà.join("<br>");
-
-  document.getElementById("personaggioScelto").style.display = "flex"; //mostro il div con le informazioni sul personaggio
+  document.getElementById("personaggioScelto").style.display = "flex";
   document.getElementById("startButton").style.display = "flex";
 
-  if (contaDomanda > 0 || personaggiFiltrati < personaggi.length) {
+  if (contaDomanda > 0 || personaggiFiltrati.length < personaggi.length) {
     document.getElementById("labelWarn").style.display = "inline";
   }
 
   contaDomanda = 0;
 }
 
-// Funzione per nascondere i bottoni
 function deleteButtons() {
-  const bottoni = document.getElementsByClassName("bottoni");
-  for (let i = 0; i < bottoni.length; i++) {
-    bottoni[i].style.display = "none";
-  }
+  [...document.getElementsByClassName("bottoni")].forEach((el) => {
+    el.style.display = "none";
+  });
 }
 
 function risposta(r) {
-  const target = domande[contaDomanda].target;
-  if (target == "speciale") {
-    //caso di domande extra
-    switch (r) {
-      case true: //il personaggio è questo
-        personaggiFiltrati = personaggiFiltrati.filter(
-          (p) => p.nome == domande[contaDomanda].id //solo le domande speciali hanno un id che è il nome del personaggio
-        );
-        break;
-      case false: //il personaggio va rimosso
-        personaggiFiltrati = personaggiFiltrati.filter(
-          (p) => p.nome !== domande[contaDomanda].id
-        );
-        break;
-    }
-  } else if (target != "speciale") {
+  const { target, id } = domande[contaDomanda];
+
+  if (target === "speciale") {
+    personaggiFiltrati = personaggiFiltrati.filter((p) =>
+      r ? p.nome === id : p.nome !== id
+    );
+  } else {
     personaggiFiltrati = personaggiFiltrati.filter((p) => p[target] === r);
   }
+
   contaDomanda++;
 
-  if (personaggiFiltrati.length == 1) {
-    //Rimane 1 personaggio => Personaggio trovato
+  if (personaggiFiltrati.length === 1) {
     pDomanda.innerHTML = `Il personaggio che ho indovinato è: ${personaggiFiltrati[0].nome}`;
     deleteButtons();
-  } else if (personaggiFiltrati.length == 0) {
-    //Non rimane nessuno => Personaggio non trovato / non presente in lista
+  } else if (personaggiFiltrati.length === 0) {
     pDomanda.innerHTML = "Non conosco questo personaggio :C";
     deleteButtons();
   } else if (contaDomanda < domande.length) {
-    //L'indice della domanda attuale è piu piccolo del totale delle domande => ci sono altre domande => prossima domanda
     mostraDomanda();
-  } else if (contaDomanda >= domande.length && personaggiFiltrati.length > 1) {
-    //Le domande sono state esaurite e i personaggi sono ancora molti
-
+  } else {
     const domandeSpeciali = personaggiFiltrati
-      .filter((p) => p.extra && p.extra.domanda) // Verifica che esista extra.domanda
+      .filter((p) => p.extra?.domanda)
       .map((p) => ({
         id: p.nome,
         domanda: p.extra.domanda,
@@ -114,7 +86,6 @@ function risposta(r) {
       }));
 
     domande.push(...domandeSpeciali);
-
     mostraDomanda();
   }
 }
@@ -123,16 +94,13 @@ window.addEventListener("DOMContentLoaded", () => {
   personaggiFiltrati = [...personaggi];
   pDomanda = document.getElementById("domanda");
 
-  document.getElementById("menuPersonaggi").addEventListener("change", (e) => {
-    sceltaPersonaggio(e.target.value);
-  });
-
-  //Popolazione del menu
   const menu = document.getElementById("menuPersonaggi");
-  for (let i = 0; i < personaggi.length; i++) {
+  menu.addEventListener("change", (e) => sceltaPersonaggio(e.target.value));
+
+  personaggi.forEach((p) => {
     const nuovaOpzione = document.createElement("option");
-    nuovaOpzione.value = personaggi[i].nome.trim();
-    nuovaOpzione.innerHTML = personaggi[i].nome;
+    nuovaOpzione.value = p.nome.trim();
+    nuovaOpzione.innerHTML = p.nome;
     menu.appendChild(nuovaOpzione);
-  }
+  });
 });
