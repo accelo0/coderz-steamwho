@@ -2,9 +2,16 @@ let personaggiFiltrati;
 let contaDomanda = 0;
 let pDomanda;
 
-function mostraDomanda() {
+function mostraDomanda(bottone) {
+  if (bottone) {
+    //in questo caso il gioco viene avviato da capo, se bottone = true
+    contaDomanda = 0;
+    personaggiFiltrati = [...personaggi];
+  }
+
   pDomanda.innerHTML = domande[contaDomanda].domanda;
   document.getElementById("startButton").style.display = "none";
+  document.getElementById("labelWarn").style.display = "none";
 
   //mostro gli elementi invisibili della classe nascosti
   const nascostiClassElements = document.getElementsByClassName("nascosti");
@@ -66,6 +73,7 @@ function deleteButtons() {
 function risposta(r) {
   const target = domande[contaDomanda].target;
   if (target == "speciale") {
+    //caso di domande extra
     switch (r) {
       case true: //il personaggio è questo
         personaggiFiltrati = personaggiFiltrati.filter(
@@ -119,6 +127,7 @@ window.addEventListener("DOMContentLoaded", () => {
     sceltaPersonaggio(e.target.value);
   });
 
+  //Popolazione del menu
   const menu = document.getElementById("menuPersonaggi");
   for (let i = 0; i < personaggi.length; i++) {
     const nuovaOpzione = document.createElement("option");
