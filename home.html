@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>STEAM Who?</title>
+
+    <script src="domande.js"></script>
+    <script src="personaggi.js"></script>
+    <script src="index.js"></script>
+
+    <style>
+      .bottoni,
+      .nascosti,
+      #startButton,
+      #personaggioScelto {
+        display: none;
+      }
+
+      #personaggioScelto {
+        display: flex; /* cambia da grid a flex */
+        gap: 20px; /* spazio tra immagine e testo */
+        margin-top: 40px;
+      }
+
+      img {
+        width: auto;
+        height: 250px;
+      }
+    </style>
+  </head>
+
+  <body class="m-10">
+    <!-- header -->
+    <h1>STEAM Who?</h1>
+
+    <!-- scelta iniziale -->
+    <label for="menuPersonaggi">Scegli un personaggio: </label>
+    <select name="menuPersonaggi" id="menuPersonaggi" required></select>
+    <button
+      id="menuButton"
+      onclick="sceltaPersonaggio(document.getElementById('menuPersonaggi').value)"
+    >
+      Scegli
+    </button>
+    <br />
+
+    <div id="personaggioScelto">
+      <img id="personaggioImg" src="" alt="" />
+      <div>
+        <h3 id="personaggioNome"></h3>
+        <p id="personaggioBio"></p>
+        <p id="personaggioProprietà"></p>
+        <button id="startButton" onclick="mostraDomanda()">Inizia Gioco</button>
+      </div>
+    </div>
+
+    <!-- indovina -->
+    <div class="nascosti">
+      <h3 class="">Indovina il personaggio</h3>
+      <p id="domanda" class="">domanda</p>
+      <button class="bottoni nascosti" onclick="risposta(true)">Si</button>
+      <button class="bottoni nascosti" onclick="risposta(false)">No</button>
+      <ol id="personaggi" class=""></ol>
+    </div>
+  </body>
+</html>
