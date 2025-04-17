@@ -11,7 +11,8 @@
       .bottoni,
       .nascosti,
       #startButton,
-      #personaggioScelto {
+      #personaggioScelto,
+      #labelWarn {
         display: none;
       }
 
@@ -34,13 +35,10 @@
 
     <!-- scelta iniziale -->
     <label for="menuPersonaggi">Scegli un personaggio: </label>
-    <select name="menuPersonaggi" id="menuPersonaggi" required></select>
-    <button
-      id="menuButton"
-      onclick="sceltaPersonaggio(document.getElementById('menuPersonaggi').value)"
-    >
-      Scegli
-    </button>
+    <select name="menuPersonaggi" id="menuPersonaggi" required>
+      <option value="" disabled>Clicca per scegliere</option>
+    </select>
+
     <br />
 
     <div id="personaggioScelto">
@@ -49,13 +47,16 @@
         <h3 id="personaggioNome"></h3>
         <p id="personaggioBio"></p>
         <p id="personaggioProprietà"></p>
+        <label for="startButton" id="labelWarn">
+          Se Inizi di nuovo il gioco ricomincerai da capo
+        </label>
         <button id="startButton" onclick="mostraDomanda()">Inizia Gioco</button>
       </div>
     </div>
 
     <!-- indovina -->
     <div class="nascosti">
-      <h3 class="">Indovina il personaggio</h3>
+      <h3 class="">Indovino il personaggio</h3>
       <p id="domanda" class="">domanda</p>
       <button class="bottoni nascosti" onclick="risposta(true)">Si</button>
       <button class="bottoni nascosti" onclick="risposta(false)">No</button>

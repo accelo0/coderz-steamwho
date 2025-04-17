@@ -48,6 +48,10 @@ function sceltaPersonaggio(personaggio) {
   document.getElementById("personaggioScelto").style.display = "flex"; //mostro il div con le informazioni sul personaggio
   document.getElementById("startButton").style.display = "flex";
 
+  if (contaDomanda > 0 || personaggiFiltrati < personaggi.length) {
+    document.getElementById("labelWarn").style.display = "inline";
+  }
+
   contaDomanda = 0;
 }
 
@@ -110,6 +114,10 @@ function risposta(r) {
 window.addEventListener("DOMContentLoaded", () => {
   personaggiFiltrati = [...personaggi];
   pDomanda = document.getElementById("domanda");
+
+  document.getElementById("menuPersonaggi").addEventListener("change", (e) => {
+    sceltaPersonaggio(e.target.value);
+  });
 
   const menu = document.getElementById("menuPersonaggi");
   for (let i = 0; i < personaggi.length; i++) {
