@@ -2,10 +2,11 @@ let personaggiFiltrati;
 let contaDomanda = 0;
 let pDomanda;
 
-function mostraDomanda(reset = false) {
+function mostraDomanda(reset) {
   if (reset) {
+    //se reset è true => mostra domanda è stato triggerato dal pulsante della pagina
     contaDomanda = 0;
-    personaggiFiltrati = [...personaggi];
+    personaggiFiltrati = [...personaggi]; //reset per una nuova partita
   }
 
   pDomanda.innerHTML = domande[contaDomanda].domanda;
@@ -17,6 +18,7 @@ function mostraDomanda(reset = false) {
   });
 }
 
+//Funzione che mostra il div nascosto "personaggioScelto"
 function sceltaPersonaggio(nome) {
   const personaggio = personaggi.find((p) => p.nome === nome);
   console.log(personaggio);
@@ -56,9 +58,10 @@ function deleteButtons() {
 }
 
 function risposta(r) {
-  const { target, id } = domande[contaDomanda];
+  const { target, id } = domande[contaDomanda]; //l'id della domanda è uguale al nome del personaggio (solo per domande speciali)
 
   if (target === "speciale") {
+    //Se la risposta alla domanda speciale è true, vuol dire che il personaggio da indovinare è quello associato a questa domanda speciale
     personaggiFiltrati = personaggiFiltrati.filter((p) =>
       r ? p.nome === id : p.nome !== id
     );
@@ -69,14 +72,18 @@ function risposta(r) {
   contaDomanda++;
 
   if (personaggiFiltrati.length === 1) {
+    //Nell'array rimane 1 personaggio, quindi è quello da indovinare
     pDomanda.innerHTML = `Il personaggio che ho indovinato è: ${personaggiFiltrati[0].nome}`;
     deleteButtons();
   } else if (personaggiFiltrati.length === 0) {
+    //Nell'array non rimane piu niente, le risposte date non combaciano ad alcun personaggio
     pDomanda.innerHTML = "Non conosco questo personaggio :C";
     deleteButtons();
   } else if (contaDomanda < domande.length) {
+    //Ho altre domande da fare
     mostraDomanda();
   } else {
+    //L'array di personaggiFiltrati ha piu di 1 personaggi ed ho esaurito le domande
     const domandeSpeciali = personaggiFiltrati
       .filter((p) => p.extra?.domanda)
       .map((p) => ({
