@@ -24,9 +24,11 @@ function sceltaPersonaggio(nome) {
   console.log(personaggio);
 
   document.getElementById("personaggioNome").innerHTML = personaggio.nome;
-  document.getElementById("personaggioImg").src = `imgs/${personaggio.nome
+  document.getElementById(
+    "personaggioImg"
+  ).src = `https://raw.githubusercontent.com/accelo0/coderz-steamwho/refs/heads/main/imgs/${personaggio.nome
     .toLowerCase()
-    .replace(/ /g, "_")}.png`;
+    .replace(/ /g, "_")}.png`; //`imgs/${personaggio.nome.toLowerCase().replace(/ /g, "_")}.png`;
   document.getElementById("personaggioBio").innerHTML = personaggio.descrizione;
 
   const proprietà = [
